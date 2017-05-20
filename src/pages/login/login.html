@@ -1,0 +1,73 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid align="center">
+    <ion-row>
+      <ion-col>
+        <button ion-button block>
+          <ion-icon name="logo-facebook"></ion-icon>
+          &nbsp; Login with Facebook
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="danger">
+          <ion-icon name="logo-googleplus"></ion-icon>
+          &nbsp;Login with Google
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h5 text-center>
+          or
+        </h5>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <form [formGroup]="form">
+          <ion-list>
+            <ion-item>
+              <ion-input type="text" placeholder="Email" formControlName="username" autocorrect="off" autocapitalize="none"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>Remember me</ion-label>
+              <ion-checkbox formControlName="rememberMe"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <a>Forgot Password?</a>
+            </ion-item>
+          </ion-list>
+        </form>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="secondary" (click)="authenticate()">
+          Login
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="gray-bottom-border">
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <a (click)="goToSignupPage()">Don't have an account? Sign up</a>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
