@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../providers/auth-service/auth-service';
 import { IonicStorageModule } from '@ionic/storage';
 import {LoginPage} from "../pages/login/login";
+import { ProjectProvider } from '../providers/project/project';
 
 const pages = [
     MyApp,
@@ -32,7 +33,8 @@ const pages = [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthService
+    AuthService,
+    ProjectProvider
   ]
 })
 export class AppModule {}

@@ -3,7 +3,7 @@ import {AlertController, IonicPage, LoadingController, NavController, NavParams}
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../providers/auth-service/auth-service";
 import {User} from "../../model/user";
-import {HomePage} from "../home/home";
+import {ListPage} from "../list/list";
 
 /**
  * Generated class for the LoginPage page.
@@ -44,7 +44,7 @@ export class LoginPage {
       this.authService.authenticate(this.form.value)
         .subscribe((user: User) => {
           loader.dismiss();
-          this.navCtrl.setRoot(HomePage);
+          this.navCtrl.setRoot(ListPage);
         }, (error: any) => {
           loader.dismiss();
           let message = this.alertController.create({
