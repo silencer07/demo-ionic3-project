@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content>
+  <ion-toolbar align="center">
+    <button ion-button color="primary" type="button" [disabled]="false" (click)="itemTapped($event, null)">
+      Create Project
+    </button>
+  </ion-toolbar>
   <ion-list>
     <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
       {{item.id}} - {{item.name}}
