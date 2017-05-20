@@ -8,31 +8,51 @@
 
 
 <ion-content padding>
-  <ion-grid align="center">
-    <ion-row>
-      <ion-col>
-        <form [formGroup]="form">
-          <ion-list>
+    <form [formGroup]="form" novalidate (submit)="authenticate()">
+      <ion-grid align="center">
+        <ion-row>
+          <ion-col>
             <ion-item>
               <ion-input type="text" placeholder="Email" formControlName="username" autocorrect="off" autocapitalize="none"></ion-input>
             </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!form.controls.username.valid && (form.controls.username.dirty && hasSubmitted)">
+          <ion-col>
+            <ion-item class="error-message">
+              Should be a valid email
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
             <ion-item>
               <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
             </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!form.controls.password.valid && (form.controls.password.dirty && hasSubmitted)">
+          <ion-col>
+            <ion-item class="error-message">
+              Password should be at least 4 characters long
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
             <ion-item>
               <ion-label>Remember me</ion-label>
               <ion-checkbox formControlName="rememberMe"></ion-checkbox>
             </ion-item>
-          </ion-list>
-        </form>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <button ion-button block color="secondary" (click)="authenticate()">
-          Login
-        </button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <button ion-button block color="secondary" type="submit" [disabled]="false">
+              Login
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
 </ion-content>

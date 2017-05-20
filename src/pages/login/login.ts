@@ -19,13 +19,14 @@ import {HomePage} from "../home/home";
 export class LoginPage {
 
   form: FormGroup;
+  hasSubmitted: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
               private formBuilder: FormBuilder,private authService: AuthService,
               private loadingController: LoadingController, private alertController: AlertController) {
     this.form = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      username: ['', Validators.email],
+      password: ['', [Validators.required, Validators.minLength(4)]],
       rememberMe: [true]
     });
 
@@ -40,23 +41,29 @@ export class LoginPage {
   }
 
   authenticate(){
-    let loader = this.loadingController.create({
-      content: "Logging in. Please wait..."
-    });
-    loader.present();
-    this.authService.authenticate(this.form.value)
-      .subscribe((user: User) => {
-        loader.dismissAll();
-        this.navCtrl.setRoot(HomePage);
-      }, (error: any) => {
-        loader.dismissAll();
-        let message = this.alertController.create({
-          title: 'Login Error',
-          subTitle: 'Invalid username and/or password. If you registered already, please make sure to verify your email.',
-          buttons: ['OK']
-        });
-        message.present();
+    this.hasSubmitted = true;
+
+    if(this.form.valid){
+      let loader = this.loadingController.create({
+        content: "Logging in. Please wait..."
       });
+      loader.present();
+      this.authService.authenticate(this.form.value)
+        .subscribe((user: User) => {
+          loader.dismissAll();
+          this.navCtrl.setRoot(HomePage);
+        }, (error: any) => {
+          loader.dismissAll();
+          let message = this.alertController.create({
+            title: 'Login Error',
+            subTitle: 'Invalid username and/or password. If you registered already, please make sure to verify your email.',
+            buttons: ['OK']
+          });
+          message.present();
+        });
+    }else {
+
+    }
   }
 
 }
