@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {AlertController, IonicPage, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AuthService, EmailCredentials} from "../../providers/auth-service/auth-service";
+import {AuthService} from "../../providers/auth-service/auth-service";
 import {User} from "../../model/user";
 import {HomePage} from "../home/home";
 
@@ -26,14 +26,7 @@ export class LoginPage {
               private loadingController: LoadingController, private alertController: AlertController) {
     this.form = this.formBuilder.group({
       username: ['', Validators.email],
-      password: ['', [Validators.required, Validators.minLength(4)]],
-      rememberMe: [true]
-    });
-
-    this.authService.storedCredentials.subscribe((cred: EmailCredentials) => {
-      if(cred){
-        this.form.patchValue(cred);
-      }
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
@@ -50,10 +43,10 @@ export class LoginPage {
       loader.present();
       this.authService.authenticate(this.form.value)
         .subscribe((user: User) => {
-          loader.dismissAll();
+          loader.dismiss();
           this.navCtrl.setRoot(HomePage);
         }, (error: any) => {
-          loader.dismissAll();
+          loader.dismiss();
           let message = this.alertController.create({
             title: 'Login Error',
             subTitle: 'Invalid username and/or password. If you registered already, please make sure to verify your email.',
@@ -61,8 +54,6 @@ export class LoginPage {
           });
           message.present();
         });
-    }else {
-
     }
   }
 

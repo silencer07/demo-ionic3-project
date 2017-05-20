@@ -6,7 +6,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {AuthService} from "../providers/auth-service/auth-service";
-import {User} from "../model/user";
 import {LoginPage} from "../pages/login/login";
 
 @Component({
@@ -40,14 +39,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
-      this.auth.user.subscribe((user: User) => {
-        if(user){
-          this.rootPage = HomePage;
-        } else {
-          this.rootPage = LoginPage;
-        }
-      });
+      this.rootPage = LoginPage;
     });
   }
 
