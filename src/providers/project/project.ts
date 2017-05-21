@@ -27,14 +27,19 @@ export class ProjectProvider {
     return Observable.of(JSON.parse(localStorage.getItem(ProjectProvider.PROJECT_KEY)) as Array<Project>);
   }
 
-  create(name: string): Observable<Project> {
+  save(name: string): Observable<Project> {
+    if(!name){
+      return Observable.throw("name cannot be blank")
+    }
+
     return this.searchByName(name).flatMap((result: Project) => {
-      if(result !== null){
+      if(result){
         return Observable.throw(`${name} already exists(case-insensitive)`);
       }
 
       return this.list().flatMap((projects: Array<Project>) => {
-        let id = Math.max(...projects.map(proj => proj.id)) + 1;
+        projects = projects ? projects : [];
+        let id = projects.length ? Math.max(...projects.map(proj => proj.id)) + 1 : 1;
         let newProject = new Project();
         newProject.id = id;
         newProject.name = name;
@@ -47,30 +52,40 @@ export class ProjectProvider {
   }
 
   update(id: number, name: string): Observable<Project> {
-    return this.searchById(id).flatMap(proj => {
-      if(proj !== null){
-        proj.name = name;
-        return this.list().flatMap(projects => {
-          let index = projects.findIndex(p => p.id === id);
-          projects[index] = proj;
-
-          return Observable.of(proj);
-
+    return this.searchById(id).flatMap(byId => {
+      if(byId !== null){
+        return this.searchByName(name).flatMap(byName =>{
+          if(!byName) {
+            return this.list().flatMap(projects => {
+              byId.name = name;
+              let index = projects.findIndex(p => p.id === id);
+              projects[index] = byId;
+              localStorage.setItem(ProjectProvider.PROJECT_KEY, JSON.stringify(projects));
+              return Observable.of(byId);
+            });
+          } else {
+            return Observable.throw(`project with name ${name} already exists`);
+          }
         });
       }
       return Observable.throw(`project with id:${id} does not exists`);
     });
   }
 
+  saveOrUpdate(project: Project): Observable<Project> {
+    return project.id > 0 ? this.update(project.id, project.name) : this.save(project.name);
+  }
+
   searchById(id: number): Observable<Project> {
     return this.list().flatMap((projects: Array<Project>) =>
-      Observable.of(projects.length > 0 ? projects.filter(proj => proj.id === id)[0] : null)
+      Observable.of(projects && projects.length > 0 ? projects.find(proj => proj.id === id) : null)
     );
   }
 
   searchByName(name: string): Observable<Project> {
-    return this.list().flatMap((projects: Array<Project>) =>
-      Observable.of(projects.length > 0 ? projects.filter(proj => proj.name.toLowerCase() === name)[0] : null)
-    );
+    return this.list().flatMap((projects: Array<Project>) => {
+      let project = projects && projects.length > 0 ? projects.find(proj => proj.name.toLowerCase() === name) : null;
+      return Observable.of(project);
+    });
   }
 }
