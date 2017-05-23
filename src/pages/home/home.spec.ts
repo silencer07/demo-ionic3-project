@@ -15,13 +15,18 @@ import {Validator} from "validator.ts/Validator";
 describe('HomePage', () => {
   let fixture;
   let component: HomePage;
-  let projectProvider = <ProjectProvider>{};
-  let navController = NavControllerMock.instance();
-  let alertController = AlertControllerMock.instance();
-  let navParams = NavParamsMock.instance();
+  let projectProvider;
+  let navController;
+  let alertController;
+  let navParams;
 
   beforeEach(async(() => {
-    projectProvider = <ProjectProvider>{};
+    navController = NavControllerMock.instance();
+    alertController = AlertControllerMock.instance();
+    navParams = NavParamsMock.instance();
+    projectProvider = <ProjectProvider>{
+      saveOrUpdate: (project: Project) => Observable.of(component.project)
+    };
 
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
@@ -69,17 +74,21 @@ describe('HomePage', () => {
 
   it ('should have shown an alert message when provider throws error', () => {
     projectProvider.saveOrUpdate = (p: Project) => Observable.throw("some errors");
+
+    component.saveOrUpdateProject();
+
     expect(alertController.create).toHaveBeenCalled();
   });
 
-  // it ('should go back when saving a valid project', () => {
-  //   let validator = new Validator();
-  //   let errors = validator.validate(this.project);
-  //   component.project.name = "test";
-  //   expect(errors.length).toEqual(0);
-  //
-  //   projectProvider.saveOrUpdate = (p: Project) => Observable.of(component.project);
-  //   expect(alertController.create).toHaveBeenCalledTimes(0);
-  //   expect(navController.pop).toHaveBeenCalled();
-  // });
+  it ('should go back when saving a valid project', () => {
+    let validator = new Validator();
+    component.project.name = "test";
+    let errors = validator.validate(component.project);
+    expect(errors.length).toEqual(0);
+
+    component.saveOrUpdateProject();
+
+    expect(alertController.create).toHaveBeenCalledTimes(0);
+    expect(navController.pop).toHaveBeenCalled();
+  });
 });
